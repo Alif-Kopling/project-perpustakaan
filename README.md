@@ -67,7 +67,7 @@ Digunakan untuk mengelola **buku, anggota, dan transaksi peminjaman** dengan sis
 
 1. Clone repository
    ```bash
-   git clone https://github.com/username/nama-repo.git
+   git clone https://github.com/Alif-Kopling/project-perpustakaan.git
 
 ## ▶️ Cara Menggunakan Aplikasi (Sekali Jalan)
 
