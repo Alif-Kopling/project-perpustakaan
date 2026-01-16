@@ -80,7 +80,7 @@ Pastikan sudah terinstall:
 Jalankan perintah berikut secara berurutan di terminal:
 
 ```bash
-git clone https://github.com/username/nama-repo.git
+git clone https://github.com/Alif-Kopling/project-perpustakaan.git
 cd nama-repo
 composer install
 cp .env.example .env
