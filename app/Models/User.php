@@ -8,12 +8,16 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
+/**
+ * Model untuk entitas User
+ * Menyimpan data pengguna aplikasi (admin dan siswa)
+ */
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
     /**
-     * The attributes that are mass assignable.
+     * Atribut yang dapat diisi secara massal
      *
      * @var array<int, string>
      */
@@ -26,7 +30,7 @@ class User extends Authenticatable
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
+     * Atribut yang disembunyikan saat serialisasi
      *
      * @var array<int, string>
      */
@@ -36,7 +40,7 @@ class User extends Authenticatable
     ];
 
     /**
-     * The attributes that should be cast.
+     * Casting atribut ke tipe data tertentu
      *
      * @var array<string, string>
      */
@@ -46,7 +50,8 @@ class User extends Authenticatable
     ];
 
     /**
-     * Check if user is admin
+     * Mengecek apakah user adalah admin
+     * @return bool
      */
     public function isAdmin()
     {
@@ -54,7 +59,8 @@ class User extends Authenticatable
     }
 
     /**
-     * Check if user is student
+     * Mengecek apakah user adalah siswa
+     * @return bool
      */
     public function isStudent()
     {
@@ -62,7 +68,8 @@ class User extends Authenticatable
     }
 
     /**
-     * Get the member record associated with the user
+     * Mendapatkan data member yang terkait dengan user
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function member()
     {

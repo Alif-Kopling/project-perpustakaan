@@ -14,25 +14,37 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create admin user
-        User::create([
-            'username' => 'admin',
-            'password' => Hash::make('password'),
-            'role' => 'admin',
-        ]);
+        // Update or create admin user with password 12345678
+        $admin = User::updateOrCreate(
+            ['username' => 'admin'],
+            [
+                'name' => 'Administrator',
+                'email' => 'admin@perpustakaan.test',
+                'password' => Hash::make('12345678'),
+                'role' => 'admin',
+            ]
+        );
 
-        // Create student user
-        User::create([
-            'username' => 'siswa1',
-            'password' => Hash::make('password'),
-            'role' => 'siswa',
-        ]);
+        // Update or create student user with password 12345678
+        $student = User::updateOrCreate(
+            ['username' => 'siswa1'],
+            [
+                'name' => 'Siswa Satu',
+                'email' => 'siswa1@perpustakaan.test',
+                'password' => Hash::make('12345678'),
+                'role' => 'siswa',
+            ]
+        );
 
-        // Create additional test user
-        User::create([
-            'username' => 'test',
-            'password' => Hash::make('password'),
-            'role' => 'admin',
-        ]);
+        // Update or create test user with password 12345678
+        $test = User::updateOrCreate(
+            ['username' => 'test'],
+            [
+                'name' => 'Test User',
+                'email' => 'test@perpustakaan.test',
+                'password' => Hash::make('12345678'),
+                'role' => 'admin',
+            ]
+        );
     }
 }

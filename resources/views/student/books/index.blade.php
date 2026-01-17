@@ -9,6 +9,18 @@
         <h3 class="text-lg font-semibold">Semua Buku Tersedia</h3>
     </div>
 
+    @if(session('success'))
+        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+            {{ session('error') }}
+        </div>
+    @endif
+
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         @forelse($books as $book)
         <div class="border rounded-lg p-4 hover:shadow-md transition-shadow">
@@ -18,7 +30,10 @@
             <p class="text-gray-800 font-medium mt-2">Stok: {{ $book->stok }}</p>
             <div class="mt-4">
                 @if($book->stok > 0)
-                    <button class="btn-primary py-1 px-3 rounded text-sm">Pinjam</button>
+                    <form action="{{ route('student.books.borrow', $book) }}" method="POST" style="display:inline;">
+                        @csrf
+                        <button type="submit" class="btn-primary py-1 px-3 rounded text-sm">Pinjam</button>
+                    </form>
                 @else
                     <button class="btn-secondary py-1 px-3 rounded text-sm" disabled>Stok Habis</button>
                 @endif

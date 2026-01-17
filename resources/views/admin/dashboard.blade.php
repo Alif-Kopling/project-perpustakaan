@@ -49,7 +49,9 @@
     <div class="flex justify-between items-center mb-4">
         <h3 class="text-lg font-semibold">Statistik Peminjaman</h3>
         <div class="flex space-x-2">
-            <span class="px-3 py-1 rounded bg-soft-brown text-white text-sm">Bulanan</span>
+            <button id="dailyBtn" class="px-3 py-1 rounded text-sm period-btn" data-period="daily">Harian</button>
+            <button id="weeklyBtn" class="px-3 py-1 rounded text-sm period-btn" data-period="weekly">Mingguan</button>
+            <button id="monthlyBtn" class="px-3 py-1 rounded bg-soft-brown text-white text-sm period-btn active" data-period="monthly">Bulanan</button>
         </div>
     </div>
     <canvas id="chart" width="400" height="200"></canvas>
@@ -58,7 +60,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     // Data dari server
-    const chartData = {
+    let chartData = {
         labels: {{ json_encode($chartLabels) }},
         datasets: [{
             label: 'Jumlah Peminjaman',
@@ -87,5 +89,37 @@
     // Render chart
     const ctx = document.getElementById('chart').getContext('2d');
     const chart = new Chart(ctx, config);
+
+    // Fungsi untuk memperbarui chart
+    function updateChart(period) {
+        fetch(`/admin/dashboard/chart-data?period=${period}`)
+            .then(response => response.json())
+            .then(data => {
+                chart.data.labels = data.labels;
+                chart.data.datasets[0].data = data.values;
+                chart.update();
+
+                // Update active button
+                document.querySelectorAll('.period-btn').forEach(btn => {
+                    btn.classList.remove('bg-soft-brown', 'text-white');
+                    btn.classList.add('text-gray-700');
+                });
+
+                const activeBtn = document.querySelector(`[data-period="${period}"]`);
+                activeBtn.classList.remove('text-gray-700');
+                activeBtn.classList.add('bg-soft-brown', 'text-white');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+
+    // Event listener untuk tombol periode
+    document.querySelectorAll('.period-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const period = this.getAttribute('data-period');
+            updateChart(period);
+        });
+    });
 </script>
 @endsection

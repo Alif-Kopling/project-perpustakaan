@@ -33,22 +33,22 @@
             <h1 class="text-2xl font-bold text-gray-800">Aplikasi Perpustakaan</h1>
             <p class="text-gray-600 mt-2">Silakan login untuk melanjutkan</p>
         </div>
-        
+
         @if(session('error'))
             <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
                 {{ session('error') }}
             </div>
         @endif
-        
+
         <form method="POST" action="{{ route('login') }}">
             @csrf
             <div class="mb-4">
                 <label for="username" class="block text-gray-700 text-sm font-medium mb-2">Username</label>
-                <input 
-                    type="text" 
-                    id="username" 
-                    name="username" 
-                    value="{{ old('username') }}" 
+                <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    value="{{ old('username') }}"
                     class="input-field w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-opacity-50"
                     required
                 >
@@ -56,13 +56,13 @@
                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                 @enderror
             </div>
-            
+
             <div class="mb-6">
                 <label for="password" class="block text-gray-700 text-sm font-medium mb-2">Password</label>
-                <input 
-                    type="password" 
-                    id="password" 
-                    name="password" 
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
                     class="input-field w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-opacity-50"
                     required
                 >
@@ -70,12 +70,17 @@
                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                 @enderror
             </div>
-            
+
             <button type="submit" class="btn-primary w-full text-white py-2 px-4 rounded-lg hover:opacity-90 transition duration-200 transform transition-transform duration-150 hover:scale-105">
                 Login
             </button>
         </form>
-        
+
+        <div class="mt-4 text-center">
+            <p class="text-gray-600 text-sm">
+                Belum punya akun? <a href="{{ route('register') }}" class="text-soft-brown hover:underline">Daftar sekarang</a>
+            </p>
+        </div>
 
         <div class="mt-6 text-center">
             <p class="text-gray-600 text-sm">

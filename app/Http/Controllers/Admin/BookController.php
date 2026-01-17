@@ -8,10 +8,15 @@ use App\Models\Book;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 
+/**
+ * Controller untuk mengelola data buku
+ * Termasuk CRUD (Create, Read, Update, Delete) dan impor dari CSV
+ */
 class BookController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Menampilkan daftar semua buku
+     * @return \Illuminate\View\View
      */
     public function index()
     {
@@ -20,7 +25,8 @@ class BookController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Menampilkan form untuk membuat buku baru
+     * @return \Illuminate\View\View
      */
     public function create()
     {
@@ -28,10 +34,13 @@ class BookController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Menyimpan buku baru ke database
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
     {
+        // Validasi input dari form
         $request->validate([
             'judul' => 'required|string|max:255',
             'penulis' => 'required|string|max:255',
@@ -40,13 +49,17 @@ class BookController extends Controller
             'stok' => 'required|integer|min:0',
         ]);
 
+        // Simpan data buku baru ke database
         Book::create($request->all());
 
+        // Redirect ke halaman daftar buku dengan pesan sukses
         return redirect()->route('admin.books.index')->with('success', 'Buku berhasil ditambahkan.');
     }
 
     /**
-     * Display the specified resource.
+     * Menampilkan detail buku tertentu
+     * @param Book $book
+     * @return \Illuminate\View\View
      */
     public function show(Book $book)
     {
@@ -54,7 +67,9 @@ class BookController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Menampilkan form untuk mengedit buku
+     * @param Book $book
+     * @return \Illuminate\View\View
      */
     public function edit(Book $book)
     {
@@ -62,10 +77,14 @@ class BookController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Memperbarui data buku di database
+     * @param Request $request
+     * @param Book $book
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, Book $book)
     {
+        // Validasi input dari form edit
         $request->validate([
             'judul' => 'required|string|max:255',
             'penulis' => 'required|string|max:255',
@@ -74,45 +93,60 @@ class BookController extends Controller
             'stok' => 'required|integer|min:0',
         ]);
 
+        // Update data buku
         $book->update($request->all());
 
+        // Redirect ke halaman daftar buku dengan pesan sukses
         return redirect()->route('admin.books.index')->with('success', 'Buku berhasil diperbarui.');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Menghapus buku dari database
+     * @param Book $book
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy(Book $book)
     {
+        // Hapus data buku
         $book->delete();
 
+        // Redirect ke halaman daftar buku dengan pesan sukses
         return redirect()->route('admin.books.index')->with('success', 'Buku berhasil dihapus.');
     }
-    
+
     /**
-     * Import books from CSV
+     * Impor data buku dari file CSV
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function importCsv(Request $request)
     {
+        // Validasi file yang diupload
         $validator = Validator::make($request->all(), [
             'file' => 'required|mimes:csv,txt|max:2048',
         ]);
 
+        // Jika validasi gagal, kembali ke halaman sebelumnya dengan error
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
+        // Simpan file sementara
         $file = $request->file('file');
         $path = $file->store('temp');
         $filePath = storage_path('app/' . $path);
 
+        // Baca data dari file CSV
         $data = array_map('str_getcsv', file($filePath));
         $header = array_shift($data);
 
+        // Loop melalui setiap baris data
         foreach ($data as $row) {
-            if (count($row) >= 5) { // Ensure we have enough columns (judul, penulis, penerbit, kategori, stok)
+            // Pastikan jumlah kolom cukup (judul, penulis, penerbit, kategori, stok)
+            if (count($row) >= 5) {
+                // Buat atau update data buku berdasarkan judul
                 Book::updateOrCreate(
-                    ['judul' => $row[0]], // Assuming judul is in the first column
+                    ['judul' => $row[0]], // Cek keberadaan buku berdasarkan judul
                     [
                         'judul' => $row[0],
                         'penulis' => $row[1],
@@ -124,8 +158,10 @@ class BookController extends Controller
             }
         }
 
+        // Hapus file sementara setelah selesai
         Storage::delete($path);
 
+        // Redirect ke halaman daftar buku dengan pesan sukses
         return redirect()->route('admin.books.index')->with('success', 'Data buku berhasil diimpor dari CSV.');
     }
 }
