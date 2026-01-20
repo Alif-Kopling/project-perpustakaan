@@ -50,15 +50,34 @@
             
             <div>
                 <label for="borrow_date" class="block text-sm font-medium text-gray-700 mb-1">Tanggal Pinjam</label>
-                <input 
-                    type="date" 
-                    id="borrow_date" 
-                    name="borrow_date" 
-                    value="{{ old('borrow_date', date('Y-m-d')) }}" 
+                <input
+                    type="date"
+                    id="borrow_date"
+                    name="borrow_date"
+                    value="{{ old('borrow_date', date('Y-m-d')) }}"
                     class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-opacity-50 @error('borrow_date') border-red-500 @enderror"
                     required
                 >
                 @error('borrow_date')
+                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div>
+                <label for="duration" class="block text-sm font-medium text-gray-700 mb-1">Durasi Peminjaman</label>
+                <select
+                    id="duration"
+                    name="duration"
+                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-opacity-50 @error('duration') border-red-500 @enderror"
+                    required
+                >
+                    <option value="">Pilih Durasi</option>
+                    <option value="1" {{ old('duration') == '1' ? 'selected' : '' }}>1 Minggu</option>
+                    <option value="2" {{ old('duration') == '2' ? 'selected' : '' }}>2 Minggu</option>
+                    <option value="3" {{ old('duration') == '3' ? 'selected' : '' }}>3 Minggu</option>
+                    <option value="4" {{ old('duration') == '4' ? 'selected' : '' }}>1 Bulan</option>
+                </select>
+                @error('duration')
                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                 @enderror
             </div>

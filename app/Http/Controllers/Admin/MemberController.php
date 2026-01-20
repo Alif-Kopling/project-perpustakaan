@@ -13,9 +13,24 @@ class MemberController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $members = Member::all();
+        $query = Member::query();
+
+        // Tambahkan pencarian jika ada parameter pencarian
+        if ($request->filled('search')) {
+            $searchTerm = $request->search;
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('nama', 'LIKE', "%{$searchTerm}%")
+                  ->orWhere('nit', 'LIKE', "%{$searchTerm}%")
+                  ->orWhere('kelas', 'LIKE', "%{$searchTerm}%")
+                  ->orWhere('jurusan', 'LIKE', "%{$searchTerm}%")
+                  ->orWhere('username', 'LIKE', "%{$searchTerm}%");
+            });
+        }
+
+        $members = $query->paginate(10); // Gunakan paginate untuk mendukung pagination
+
         return view('admin.members.index', compact('members'));
     }
 

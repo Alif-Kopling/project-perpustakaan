@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Aplikasi Perpustakaan</title>
+    <title>Lupa Password - Aplikasi Perpustakaan</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -46,13 +46,13 @@
             transform: translateY(-2px);
         }
 
-        .btn-login {
+        .btn-reset {
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
         }
 
-        .btn-login::before {
+        .btn-reset::before {
             content: '';
             position: absolute;
             top: 0;
@@ -63,11 +63,11 @@
             transition: left 0.5s;
         }
 
-        .btn-login:hover::before {
+        .btn-reset:hover::before {
             left: 100%;
         }
 
-        .btn-login:hover {
+        .btn-reset:hover {
             transform: translateY(-3px);
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
         }
@@ -87,15 +87,6 @@
 
         .input-with-icon {
             padding-left: 2.5rem;
-        }
-
-        .password-toggle {
-            position: absolute;
-            right: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
-            color: #8B6F47;
         }
 
         /* Responsive adjustments */
@@ -131,127 +122,73 @@
         <!-- Left side - Illustration -->
         <div class="illustration-section hidden lg:block w-full lg:w-1/2 text-center">
             <div class="floating">
-                <i class="fas fa-book-open text-9xl text-amber-600 mb-6"></i>
+                <i class="fas fa-key text-9xl text-amber-600 mb-6"></i>
             </div>
-            <h1 class="text-4xl font-bold text-gray-800 mb-4">Selamat Datang di</h1>
-            <h2 class="text-3xl font-semibold text-amber-700 mb-6">Aplikasi Perpustakaan</h2>
+            <h1 class="text-4xl font-bold text-gray-800 mb-4">Lupa Password?</h1>
+            <h2 class="text-3xl font-semibold text-amber-700 mb-6">Kami Bantu Anda</h2>
             <p class="text-gray-600 text-lg max-w-md mx-auto">
-                Temukan dunia pengetahuan dan inspirasi dalam satu platform digital kami.
-                Akses ribuan buku dan sumber belajar dengan mudah dan cepat.
+                Masukkan alamat email Anda dan kami akan mengirimkan tautan untuk mengatur ulang password Anda.
             </p>
             <div class="mt-8 flex justify-center space-x-4">
                 <div class="bg-white p-4 rounded-xl shadow-lg transform rotate-6">
-                    <i class="fas fa-book text-3xl text-amber-600"></i>
+                    <i class="fas fa-envelope text-3xl text-amber-600"></i>
                 </div>
                 <div class="bg-white p-4 rounded-xl shadow-lg transform -rotate-3">
-                    <i class="fas fa-glasses text-3xl text-amber-600"></i>
+                    <i class="fas fa-lock text-3xl text-amber-600"></i>
                 </div>
                 <div class="bg-white p-4 rounded-xl shadow-lg transform rotate-2">
-                    <i class="fas fa-lightbulb text-3xl text-amber-600"></i>
+                    <i class="fas fa-sync-alt text-3xl text-amber-600"></i>
                 </div>
             </div>
         </div>
 
-        <!-- Right side - Login Form -->
+        <!-- Right side - Forgot Password Form -->
         <div class="login-container w-full lg:w-1/2 max-w-md">
             <div class="glass-effect rounded-2xl shadow-2xl p-8 md:p-10 mobile-padding">
                 <div class="text-center mb-8">
                     <div class="mx-auto bg-amber-100 w-16 h-16 rounded-full flex items-center justify-center mb-4">
-                        <i class="fas fa-user-lock text-2xl text-amber-700"></i>
+                        <i class="fas fa-key text-2xl text-amber-700"></i>
                     </div>
-                    <h1 class="text-3xl font-bold text-gray-800">Login</h1>
-                    <p class="text-gray-600 mt-2">Masuk ke akun Anda untuk melanjutkan</p>
+                    <h1 class="text-3xl font-bold text-gray-800">Lupa Password</h1>
+                    <p class="text-gray-600 mt-2">Masukkan email Anda untuk reset password</p>
                 </div>
 
-                @if(session('error'))
-                    <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded glass-effect">
-                        <p>{{ session('error') }}</p>
+                @if(session('status'))
+                    <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6 rounded glass-effect">
+                        <p>{{ session('status') }}</p>
                     </div>
                 @endif
 
-                <form method="POST" action="{{ route('login') }}">
+                <form method="POST" action="{{ route('password.email') }}">
                     @csrf
                     <div class="input-group">
-                        <i class="fas fa-user input-icon"></i>
+                        <i class="fas fa-envelope input-icon"></i>
                         <input
-                            type="text"
-                            id="username"
-                            name="username"
-                            value="{{ old('username') }}"
+                            type="email"
+                            id="email"
+                            name="email"
+                            value="{{ old('email') }}"
                             class="input-with-icon w-full px-4 py-3 pl-10 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-amber-500 input-focus bg-white bg-opacity-80"
-                            placeholder="Masukkan username"
+                            placeholder="Masukkan email Anda"
                             required
                         >
-                        @error('username')
+                        @error('email')
                             <p class="text-red-500 text-xs mt-1 ml-1">{{ $message }}</p>
                         @enderror
                     </div>
 
-                    <div class="input-group">
-                        <i class="fas fa-lock input-icon"></i>
-                        <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            class="input-with-icon w-full px-4 py-3 pl-10 pr-12 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-amber-500 input-focus bg-white bg-opacity-80"
-                            placeholder="Masukkan password"
-                            required
-                        >
-                        <span class="password-toggle" id="togglePassword">
-                            <i class="fas fa-eye"></i>
-                        </span>
-                        @error('password')
-                            <p class="text-red-500 text-xs mt-1 ml-1">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <div class="flex flex-col sm:flex-row items-center justify-between mb-6 gap-3">
-                        <div class="flex items-center">
-                            <input
-                                id="remember_me"
-                                name="remember"
-                                type="checkbox"
-                                class="h-4 w-4 text-amber-600 focus:ring-amber-500 border-gray-300 rounded"
-                            >
-                            <label for="remember_me" class="ml-2 block text-sm text-gray-700">
-                                Ingat saya
-                            </label>
-                        </div>
-
-                        <a href="{{ route('password.request') }}" class="text-sm text-amber-600 hover:text-amber-800 transition duration-200 text-center">
-                            Lupa password?
-                        </a>
-                    </div>
-
-                    <button type="submit" class="btn-login w-full bg-gradient-to-r from-amber-600 to-amber-700 text-white py-3 px-4 rounded-lg font-semibold text-lg shadow-lg">
-                        <i class="fas fa-sign-in-alt mr-2"></i> Masuk
+                    <button type="submit" class="btn-reset w-full bg-gradient-to-r from-amber-600 to-amber-700 text-white py-3 px-4 rounded-lg font-semibold text-lg shadow-lg">
+                        <i class="fas fa-paper-plane mr-2"></i> Kirim Tautan Reset
                     </button>
                 </form>
 
                 <div class="mt-6 text-center">
                     <p class="text-gray-600 text-sm mobile-text">
-                        Belum punya akun?
-                        <a href="{{ route('register') }}" class="text-amber-600 font-medium hover:text-amber-800 transition duration-200">
-                            Daftar sekarang
+                        Ingat password Anda?
+                        <a href="{{ route('login') }}" class="text-amber-600 font-medium hover:text-amber-800 transition duration-200">
+                            Kembali ke login
                         </a>
                     </p>
-                </div>
-
-                <div class="mt-8 pt-6 border-t border-gray-200 border-opacity-50">
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
-                        <div class="text-center">
-                            <div class="text-xl sm:text-2xl font-bold text-amber-700">1000+</div>
-                            <div class="text-xs sm:text-sm text-gray-600">Buku Tersedia</div>
-                        </div>
-                        <div class="text-center">
-                            <div class="text-xl sm:text-2xl font-bold text-amber-700">500+</div>
-                            <div class="text-xs sm:text-sm text-gray-600">Anggota Aktif</div>
-                        </div>
-                        <div class="text-center">
-                            <div class="text-xl sm:text-2xl font-bold text-amber-700">24/7</div>
-                            <div class="text-xs sm:text-sm text-gray-600">Akses Online</div>
-                        </div>
-                    </div>
                 </div>
             </div>
 
@@ -264,22 +201,6 @@
     </div>
 
     <script>
-        // Toggle password visibility
-        document.getElementById('togglePassword').addEventListener('click', function() {
-            const passwordInput = document.getElementById('password');
-            const icon = this.querySelector('i');
-
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                icon.classList.remove('fa-eye');
-                icon.classList.add('fa-eye-slash');
-            } else {
-                passwordInput.type = 'password';
-                icon.classList.remove('fa-eye-slash');
-                icon.classList.add('fa-eye');
-            }
-        });
-
         // Add subtle animation to inputs on focus
         document.querySelectorAll('input').forEach(input => {
             input.addEventListener('focus', function() {

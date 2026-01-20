@@ -21,6 +21,7 @@ class Transaction extends Model
         'member_id',
         'book_id',
         'borrow_date',
+        'due_date',
         'return_date',
         'status'
     ];

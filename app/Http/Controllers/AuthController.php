@@ -80,8 +80,8 @@ class AuthController extends Controller
             'username' => 'required|string|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
             'nit' => 'required|string|max:255',
-            'kelas' => 'required|string|max:255',
-            'jurusan' => 'required|string|max:255',
+            'kelas' => 'required|in:X,XI,XII',
+            'jurusan' => 'required|in:ATPH,APHP,ATU,APAT,NKN,TKN,NKPI,RPL,TBSM,TITL,TPM,TAB,TLOG,TBG,TBS,UPW',
         ]);
 
         // Buat akun pengguna baru

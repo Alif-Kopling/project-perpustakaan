@@ -18,10 +18,23 @@ class TransactionController extends Controller
      * Menampilkan daftar semua transaksi
      * @return \Illuminate\View\View
      */
-    public function index()
+    public function index(Request $request)
     {
         // Ambil semua transaksi beserta data member dan buku terkait
-        $transactions = Transaction::with(['member', 'book'])->get();
+        $query = Transaction::with(['member', 'book']);
+
+        // Tambahkan pencarian jika ada parameter pencarian
+        if ($request->filled('search')) {
+            $searchTerm = $request->search;
+            $query->whereHas('member', function($q) use ($searchTerm) {
+                $q->where('nama', 'LIKE', "%{$searchTerm}%");
+            })->orWhereHas('book', function($q) use ($searchTerm) {
+                $q->where('judul', 'LIKE', "%{$searchTerm}%");
+            });
+        }
+
+        $transactions = $query->paginate(10); // Gunakan paginate untuk mendukung pagination
+
         return view('admin.transactions.index', compact('transactions'));
     }
 
@@ -50,6 +63,7 @@ class TransactionController extends Controller
             'member_id' => 'required|exists:members,id',
             'book_id' => 'required|exists:books,id',
             'borrow_date' => 'required|date',
+            'duration' => 'required|in:1,2,3,4',
         ]);
 
         // Ambil data buku berdasarkan ID
@@ -60,13 +74,46 @@ class TransactionController extends Controller
             return redirect()->back()->withErrors(['book_id' => 'Stok buku tidak mencukupi.']);
         }
 
-        // Simpan data transaksi ke database
-        Transaction::create([
+        // Hitung tanggal jatuh tempo berdasarkan durasi
+        $borrowDate = \Carbon\Carbon::parse($request->borrow_date);
+        $duration = $request->duration;
+
+        switch ($duration) {
+            case '1':
+                $dueDate = $borrowDate->copy()->addWeek();
+                break;
+            case '2':
+                $dueDate = $borrowDate->copy()->addWeeks(2);
+                break;
+            case '3':
+                $dueDate = $borrowDate->copy()->addWeeks(3);
+                break;
+            case '4':
+                $dueDate = $borrowDate->copy()->addMonth();
+                break;
+            default:
+                $dueDate = $borrowDate->copy()->addWeek(); // Default ke 1 minggu
+        }
+
+        // Check if due_date column exists in the transactions table
+        $tableColumns = \Schema::getColumnListing('transactions');
+        $hasDueDateColumn = in_array('due_date', $tableColumns);
+
+        // Prepare transaction data
+        $transactionData = [
             'member_id' => $request->member_id,
             'book_id' => $request->book_id,
             'borrow_date' => $request->borrow_date,
             'status' => 'dipinjam'
-        ]);
+        ];
+
+        // Add due_date if the column exists
+        if ($hasDueDateColumn) {
+            $transactionData['due_date'] = $dueDate;
+        }
+
+        // Simpan data transaksi ke database
+        Transaction::create($transactionData);
 
         // Kurangi stok buku karena dipinjam
         $book->decrement('stok');

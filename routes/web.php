@@ -23,6 +23,14 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
 Route::post('/register', [AuthController::class, 'register']);
 
+// Rute untuk lupa password
+use App\Http\Controllers\Auth\PasswordResetController;
+
+Route::get('/forgot-password', [PasswordResetController::class, 'showForgotPasswordForm'])->name('password.request');
+Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLinkEmail'])->name('password.email');
+Route::get('/reset-password/{token}', [PasswordResetController::class, 'showResetForm'])->name('password.reset');
+Route::post('/reset-password', [PasswordResetController::class, 'reset'])->name('password.update');
+
 // Rute-rute untuk admin (memerlukan otentikasi dan role admin)
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     // Dashboard admin
@@ -82,6 +90,7 @@ Route::middleware(['auth', 'role:siswa'])->prefix('student')->group(function () 
 
     // Rute-rute untuk transaksi
     Route::get('/transactions', [\App\Http\Controllers\Student\TransactionController::class, 'index'])->name('student.transactions.index'); // Halaman daftar transaksi siswa
+    Route::put('/transactions/{transaction}/return', [\App\Http\Controllers\Student\TransactionController::class, 'returnBook'])->name('student.transactions.return'); // Proses pengembalian buku
 });
 
 // Rute utama - jika user sudah login, arahkan ke dashboard sesuai role

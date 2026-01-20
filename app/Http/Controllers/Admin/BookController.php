@@ -18,9 +18,23 @@ class BookController extends Controller
      * Menampilkan daftar semua buku
      * @return \Illuminate\View\View
      */
-    public function index()
+    public function index(Request $request)
     {
-        $books = Book::all();
+        $query = Book::query();
+
+        // Tambahkan pencarian jika ada parameter pencarian
+        if ($request->filled('search')) {
+            $searchTerm = $request->search;
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('judul', 'LIKE', "%{$searchTerm}%")
+                  ->orWhere('penulis', 'LIKE', "%{$searchTerm}%")
+                  ->orWhere('penerbit', 'LIKE', "%{$searchTerm}%")
+                  ->orWhere('kategori', 'LIKE', "%{$searchTerm}%");
+            });
+        }
+
+        $books = $query->paginate(10); // Gunakan paginate untuk mendukung pagination
+
         return view('admin.books.index', compact('books'));
     }
 
