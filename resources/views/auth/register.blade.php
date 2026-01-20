@@ -230,6 +230,7 @@
             background-size: 1em;
         }
 
+
         @media (max-width: 768px) {
             .register-container {
                 flex-direction: column;
@@ -420,16 +421,21 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="input-group">
                         <label for="password" class="input-label">Password</label>
-                        <div class="input-icon">
-                            <i class="fas fa-lock"></i>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-lock text-gray-400"></i>
+                            </div>
                             <input
                                 type="password"
                                 id="password"
                                 name="password"
-                                class="input-field"
+                                class="w-full pl-10 pr-10 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-amber-500 bg-gray-50 focus:bg-white transition-all duration-300"
                                 placeholder="Buat password kuat"
                                 required
                             >
+                            <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-amber-700 transition-colors duration-200" onclick="togglePassword('password', 'toggleIconPassword')">
+                                <i id="toggleIconPassword" class="fas fa-eye"></i>
+                            </button>
                         </div>
                         @error('password')
                             <span class="error-message">{{ $message }}</span>
@@ -438,16 +444,21 @@
 
                     <div class="input-group">
                         <label for="password_confirmation" class="input-label">Konfirmasi Password</label>
-                        <div class="input-icon">
-                            <i class="fas fa-lock"></i>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-lock text-gray-400"></i>
+                            </div>
                             <input
                                 type="password"
                                 id="password_confirmation"
                                 name="password_confirmation"
-                                class="input-field"
+                                class="w-full pl-10 pr-10 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-amber-500 bg-gray-50 focus:bg-white transition-all duration-300"
                                 placeholder="Ulangi password"
                                 required
                             >
+                            <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-amber-700 transition-colors duration-200" onclick="togglePassword('password_confirmation', 'toggleIconConfirm')">
+                                <i id="toggleIconConfirm" class="fas fa-eye"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -512,6 +523,22 @@
                 parentDiv.appendChild(strengthIndicator);
             }
         });
+
+        // Toggle password visibility
+        function togglePassword(fieldId, iconId) {
+            const passwordInput = document.getElementById(fieldId);
+            const icon = document.getElementById(iconId);
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
     </script>
 </body>
 </html>
